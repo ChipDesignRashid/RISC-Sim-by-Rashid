@@ -1,6 +1,6 @@
 # instruction_examples.py
 
-# --- NEW: 1. R-Type Examples ---
+# --- 1. R-Type Examples ---
 # Covers: add, sub, and, or, xor, sll, srl, sra, slt, sltu
 R_TYPE_EXAMPLES = """
 # === Integer Register-Register (R-Type) Demo ===
@@ -26,9 +26,10 @@ sra s5, t0, t2      # s5 = t0 >> 5 (Shift Right Arithmetic, sign extended)
 # --- Comparisons ---
 slt s6, t0, t1      # s6 = 1 (Signed Less Than: -252M < 16M)
 sltu s7, t0, t1     # s7 = 0 (Unsigned Less Than: 0xF0F0... > 0x00FF...)
+# The program now ends gracefully.
 """
 
-# --- NEW: 2. I-Type Examples ---
+# --- 2. I-Type Examples ---
 # Covers: addi, andi, ori, xori, slti, sltiu, slli, srli, srai
 I_TYPE_EXAMPLES = """
 # === Integer Immediate (I-Type) Demo ===
@@ -50,14 +51,14 @@ xori s2, t1, 0xFF   # s2 = t1 ^ 0xFF (result: 0b00110011)
 slli s3, t0, 4      # s3 = 100 << 4 = 1600
 srli s4, t0, 2      # s4 = 100 >> 2 = 25
 srai s5, t0, 2      # s5 = 100 >> 2 = 25 (positive, same as srli)
+# The program now ends gracefully.
 """
 
-# --- NEW: 3. Memory Examples ---
+# --- 3. Memory Examples ---
 # Covers: lw, lh, lb, lhu, lbu, sw, sh, sb
 MEMORY_EXAMPLES = """
 # === Memory Access Demo ===
 # Store a full 32-bit word (0xDEADBEEF) at address 100.
-# Little-endian means it's stored as: EF BE AD DE
 li s0, 100          # Base address
 li s1, 0xDEADBEEF
 sw s1, 0(s0)
@@ -69,26 +70,19 @@ li s3, 0xCCBB
 sh s3, 6(s0)        # Store halfword at address 106
 
 # --- Load the data back ---
-# Load the byte at address 100 (which is 0xEF)
 lb  t0, 0(s0)       # t0 should be -17 (sign-extended)
 lbu t1, 0(s0)       # t1 should be 239 (zero-extended)
-
-# Load the halfword at address 102 (which is 0xDEAD)
 lh  t2, 2(s0)       # t2 should be -8531 (sign-extended)
 lhu t3, 2(s0)       # t3 should be 57005 (zero-extended)
-
-# Load the full word we stored
 lw t4, 0(s0)        # t4 should be 0xDEADBEEF
+# The program now ends gracefully.
 """
 
-# --- NEW: 4. Branch Examples ---
+# --- 4. Branch Examples ---
 # Covers: beq, bne, blt, bge, bltu, bgeu
 BRANCH_EXAMPLES_FULL = """
 # === Branching Demo ===
-# This example will finish with a specific value in a0
-# depending on which branches are taken.
 # Final result in a0 should be 42.
-
   li s0, 10
   li s1, 10
   li s2, 20
@@ -116,22 +110,19 @@ target_lt:
   
   # Branch if Greater/Equal (NOT TAKEN)
   bge s2, s0, target_ge
-  
-# This is a dead end to show bge was not taken
+  # This section will be skipped
   li a0, 99
-  j done
+  j final_halt # Jump over the dead code
 
 target_ge:
   addi a0, a0, 20   # a0 = 42
   
-done:
-  # Infinite loop to halt
-  beq zero, zero, done
+final_halt:
+# The program now ends gracefully.
 """
 
-# --- NEW: 5. Jump and Call Examples ---
+# --- 5. Jump and Call Examples ---
 # Covers: jal, jalr
-# (This is the old STACK_FUNCTION_EXAMPLES, renamed for clarity)
 JUMP_CALL_EXAMPLES = """
 # === Stack and Function Call Demo ===
 # --- Main Program ---
@@ -139,12 +130,10 @@ li sp, 1000         # Initialize stack pointer
 li s0, 50           # Save 50 in s0 to test preservation
 jal ra, outer_func  # Call the function
 
-# After return, a0 holds the result (5) and s0 is 50 again.
-done:
-  beq zero, zero, done
+# After return, a0 holds the result and s0 is 50 again.
+# The program now ends gracefully.
 
 # --- Outer Function ---
-# Saves ra and s0, calls another function, then restores.
 outer_func:
   addi sp, sp, -8   # 1. Prologue: Allocate stack space
   sw ra, 4(sp)      # Save return address
@@ -159,43 +148,33 @@ outer_func:
   jalr zero, ra, 0  # Return
 
 # --- Inner Function ---
-# Simple leaf function, doesn't need a stack frame.
 inner_func:
   addi a0, zero, 5  # Set return value
   jalr zero, ra, 0  # Return
 """
 
-# --- NEW: 6. Upper Immediate Examples ---
+# --- 6. Upper Immediate Examples ---
 # Covers: lui, auipc
 U_TYPE_EXAMPLES = """
 # === Upper Immediate (U-Type) Demo ===
-# LUI is used to load a 20-bit immediate into the
-# upper 20 bits of a register, zeroing the lower 12.
-
 # 1. Load 0xABCDE into the upper bits of t0
 lui t0, 0xABCDE
 # Result: t0 = 0xABCDE000
 
-# We can then use addi to set the lower 12 bits
-# to form a full 32-bit address or value.
+# 2. Use addi to set the lower 12 bits
 addi t0, t0, 0x123
 # Result: t0 = 0xABCDE123
 
-# AUIPC adds the upper immediate to the Program Counter.
-# It's used for position-independent code.
+# 3. Use AUIPC for PC-relative addressing
 # Assume this instruction is at address 0x10.
-# The immediate is 0x10000.
-# auipc will calculate: pc + (imm << 12)
-# t1 = 0x10 + 0x10000000 = 0x10000010
+# t1 = 0x10 + (0x10000 << 12) = 0x10000010
 auipc t1, 0x10000
+# The program now ends gracefully.
 """
 
 # --- 7. Pseudo-Instruction Examples ---
 PSEUDO_INSTRUCTION_EXAMPLES = """
 # === Pseudo-Instruction Demo ===
-# Each of these will be expanded into a base instruction
-# in the "Expanded Pseudo-Instructions" window.
-
   li t0, 123      # Load Immediate (small) -> addi
   li t1, 65536    # Load Immediate (large) -> lui, addi
   
@@ -207,4 +186,5 @@ PSEUDO_INSTRUCTION_EXAMPLES = """
   
 end_label:
   ret             # Return from function -> jalr zero, ra, 0
+# The program now ends gracefully.
 """
