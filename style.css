@@ -1,0 +1,98 @@
+/* style.css */
+
+/* --- Register View Styles (Updated) --- */
+.reg-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.reg-box {
+    flex-basis: 48%; /* Set width for 2 columns with a small gap */
+    border: 2px solid #555;
+    border-radius: 5px;
+    padding: 6px; /* Reduced padding for smaller height */
+    margin: 3px;
+    text-align: center;
+    font-family: monospace;
+    font-size: 0.9em; /* Slightly smaller font */
+    color: inherit;
+    box-sizing: border-box; /* Ensures padding is included in the width */
+}
+
+.group-special { border-color: #007bff; }
+.group-temp { border-color: #fd7e14; }
+.group-saved { border-color: #6f42c1; }
+.group-args { border-color: #20c997; }
+.reg-nonzero { background-color: #28a745; color: white; }
+
+
+/* --- Memory View Styles --- */
+.mem-view {
+    font-family: monospace;
+    background-color: #222;
+    padding: 5px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.mem-row {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.mem-word-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    border: 1px solid #007bff;
+    border-radius: 3px;
+    padding: 3px 8px;
+    margin: 2px;
+}
+
+.mem-addr {
+    color: #777;
+    margin-right: 8px;
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+.mem-hex {
+    font-weight: bold;
+    color: #ccc;
+    white-space: nowrap;
+}
+
+.mem-nonzero {
+    background-color: #28a745;
+}
+
+.mem-nonzero .mem-addr, .mem-nonzero .mem-hex, .mem-nonzero .mem-disasm, .mem-nonzero .sp-label {
+    color: #fff;
+}
+
+.mem-disasm {
+    color: #99ddff;
+    margin-left: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pc-highlight {
+    border: 2px solid #f1c40f; /* Bright yellow */
+    background-color: #444;
+}
+
+/* --- Styles for Stack Viewer --- */
+.sp-highlight {
+    border: 2px solid #fd7e14; /* Bright orange */
+}
+
+.sp-label {
+    color: #fd7e14;
+    font-weight: bold;
+    margin-left: 10px;
+    white-space: nowrap;
+}
